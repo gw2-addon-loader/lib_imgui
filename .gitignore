@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+.vs/*
+*.exp
+*ilk
+*.pdb
+*.vcxproj.user
+x64/*
