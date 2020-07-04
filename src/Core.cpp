@@ -157,7 +157,8 @@ void Core::DrawOver(IDirect3DDevice9* device, bool frameDrawn, bool sceneEnded)
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 		
-		//TODO: send event
+		//this sends event to all other addons to draw their UI
+		SendDrawEvent();
 
 		ImGui::Render();
 		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());	

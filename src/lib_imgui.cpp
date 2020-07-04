@@ -41,7 +41,7 @@ void* getImGuiContext()
 
 void SendDrawEvent()
 {
-	gAPI->trigger_event(guiDrawEventId, nullptr);
+	gAPI->trigger_event(guiDrawEventId, lib_imgui::Core::i()->imguiContext());
 }
 
 gw2al_addon_dsc* gw2addon_get_description()
