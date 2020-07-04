@@ -12,9 +12,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BDCB35C3-8ED9-4A6E-A346-D16F17D4600C}</ProjectGuid>
+    <ProjectGuid>{A4F73E49-CD39-484F-973C-6DB5470DB6EA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>customd3d9</RootNamespace>
+    <RootNamespace>lib_imgui</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -46,13 +46,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>gw2addon_$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\addons\lib_imgui\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\addons\$(ProjectName)\</OutDir>
     <IncludePath>$(ProjectDir)\dep\imgui;$(ProjectDir)\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>gw2addon_$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\addons\lib_imgui\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\addons\$(ProjectName)\</OutDir>
+    <IncludePath>$(ProjectDir)\dep\imgui;$(ProjectDir)\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -60,7 +61,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;CUSTOMD3D9_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
@@ -78,8 +79,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;CUSTOMD3D9_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -93,6 +95,7 @@
     <ClInclude Include="dep\imgui\imconfig.h" />
     <ClInclude Include="dep\imgui\imgui.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
+    <ClInclude Include="gw2al_lib_imgui.h" />
     <ClInclude Include="src\build_version.h" />
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\Direct3D9Hooks.h" />
@@ -115,7 +118,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="dep\imgui\README.md" />
     <None Include="Source.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

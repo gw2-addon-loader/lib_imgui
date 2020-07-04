@@ -12,6 +12,10 @@
     <ClCompile Include="dep\imgui\imgui_demo.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="dep\imgui\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\Core.cpp" />
+    <ClCompile Include="src\Direct3D9Hooks.cpp" />
+    <ClCompile Include="src\imgui_impl_dx9_custom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h" />
@@ -25,6 +29,11 @@
     <ClInclude Include="dep\imgui\imgui_internal.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="src\build_version.h" />
+    <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\Direct3D9Hooks.h" />
+    <ClInclude Include="src\Singleton.h" />
+    <ClInclude Include="gw2al_lib_imgui.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source.def" />
