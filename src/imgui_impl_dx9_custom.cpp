@@ -39,6 +39,10 @@ static void* g_pPSO = NULL;
 static IDirect3DVertexBuffer9*  g_pVB2 = NULL;
 static DWORD g_d912pxy_texture[4] = { 0,0,0,0 };
 static DWORD g_d912pxy_sampler[4] = { 0,0,0,0 };
+static int g_VB2writeOffset = 0;
+static bool g_VB2writed = false;
+const int g_VB2structSize = 16;
+const int g_VB2maxWriteOffset = 128;
 
 //D3D9 API extenders =======================
 
@@ -143,8 +147,6 @@ void ImGui_ImplDX9_RenderDrawData_d912pxy(ImDrawData* draw_data)
 	g_pd3dDevice->SetRenderState(D3DRS_D912PXY_GPU_WRITE, D912PXY_ENCODE_GPU_WRITE_DSC(1, D912PXY_GPU_WRITE_OFFSET_TEXBIND));
 
 	g_pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(ImDrawVert));
-	//use additional vertex buffer as shader constant for proj matrix
-	g_pd3dDevice->SetStreamSource(1, g_pVB2, 0, 8);
 	g_pd3dDevice->SetIndices(g_pIB);
 	
 	// Setup viewport
@@ -167,23 +169,39 @@ void ImGui_ImplDX9_RenderDrawData_d912pxy(ImDrawData* draw_data)
 	// Setup orthographic projection matrix
 	// Being agnostic of whether <d3dx9.h> or <DirectXMath.h> can be used, we aren't relying on D3DXMatrixIdentity()/D3DXMatrixOrthoOffCenterLH() or DirectX::XMMatrixIdentity()/DirectX::XMMatrixOrthographicOffCenterLH()
 	{
-		float R = io.DisplaySize.x;
-		float B = io.DisplaySize.y;
+		float R = io.DisplaySize.x + 0.5f;
+		float B = io.DisplaySize.y + 0.5f;
 
 		if ((g_oldDisplaySize[0] != R) || (g_oldDisplaySize[1] != B))
 		{
-			g_oldDisplaySize[0] = R + 0.5f;
-			g_oldDisplaySize[1] = B + 0.5f;
+			if (g_VB2writeOffset > g_VB2maxWriteOffset)
+			{
+				if (g_VB2writed)			
+				{					
+					g_pVB2->Release();
+					g_pd3dDevice->CreateVertexBuffer(g_VB2maxWriteOffset * g_VB2structSize, 0, 0, D3DPOOL_DEFAULT, &g_pVB2, 0);
+				}
+				g_VB2writeOffset = 0;
+			}
+
+			g_oldDisplaySize[0] = R;
+			g_oldDisplaySize[1] = B;
 
 			float* viewRect;
 
-			if (g_pVB2->Lock(0, 0, (void**)&viewRect, 0) < 0)
+			if (g_pVB2->Lock(g_VB2writeOffset * g_VB2structSize, 0, (void**)&viewRect, 0) < 0)
 				return;
 
-			memcpy(viewRect, g_oldDisplaySize, 8);
+			memcpy(viewRect, g_oldDisplaySize, g_VB2structSize);
 
 			g_pVB2->Unlock();
+
+			++g_VB2writeOffset;
+			g_VB2writed = true;
 		}
+
+		//use additional vertex buffer as shader constant for proj matrix
+		g_pd3dDevice->SetStreamSource(1, g_pVB2, (g_VB2writeOffset - 1) * g_VB2structSize, 8);
 	}
 
 	// Render command lists
@@ -284,7 +302,7 @@ static bool ImGui_ImplDX9_Create_d912pxy_objects()
 	if (g_pd3dDevice->CreateVertexDeclaration(&vDclElements[0],&g_pVDecl) < 0)
 		return false;
 
-	if (g_pd3dDevice->CreateVertexBuffer(16, 0, 0, D3DPOOL_DEFAULT, &g_pVB2, 0) < 0)
+	if (g_pd3dDevice->CreateVertexBuffer(g_VB2maxWriteOffset * g_VB2structSize, 0, 0, D3DPOOL_DEFAULT, &g_pVB2, 0) < 0)
 		return false;
 
 	g_pd3dDevice->SetPixelShader(g_pPS);
@@ -543,4 +561,6 @@ void ImGui_ImplDX9_NewFrame()
 {
 	if (!g_FontTexture)
 		ImGui_ImplDX9_CreateDeviceObjects();
+
+	g_VB2writed = false;
 }
