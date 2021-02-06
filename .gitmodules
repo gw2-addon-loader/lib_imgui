@@ -1,3 +1,0 @@
-[submodule "dep/imgui"]
-	path = dep/imgui
-	url = https://github.com/gw2-addon-loader/imgui
