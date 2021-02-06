@@ -388,6 +388,9 @@ public:
 		if (!drawPSO)
 			return;
 
+		if (!draw_data->CmdListsCount || !draw_data->TotalIdxCount || !draw_data->TotalVtxCount)
+			return;
+
 		WritePrimaryGeometry(draw_data);
 		WriteAuxBuffer();		
 		SetupDraw();
@@ -633,6 +636,10 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
 
 bool ImGui_ImplDX9_Init(IDirect3DDevice9* device)
 {
+	// Setup backend capabilities flags
+	ImGuiIO& io = ImGui::GetIO();
+	io.BackendRendererName = "imgui_impl_dx9/12_gw2";
+
     g_pd3dDevice = device;
 	g_d912pxy_present = device->SetRenderState(D3DRS_ENABLE_D912PXY_API_HACKS, 1) == 343434;
     return true;
