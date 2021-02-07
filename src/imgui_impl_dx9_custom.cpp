@@ -388,6 +388,9 @@ public:
 		if (!drawPSO)
 			return;
 
+		if (!draw_data->CmdListsCount || !draw_data->TotalVtxCount || !draw_data->TotalIdxCount)
+			return;
+
 		WritePrimaryGeometry(draw_data);
 		WriteAuxBuffer();		
 		SetupDraw();
