@@ -119,6 +119,7 @@ class d912pxy_renderer
 			vstream = nullptr;
 			activeOffset = 0;
 			lastOffset = 0;
+			size = 0;
 		}
 
 		int getBindingOffset()
@@ -452,6 +453,9 @@ public:
 		vdecl = nullptr;
 
 		drawPSO = nullptr;
+
+		oldAuxBuff.displaySizeX = -1;
+		oldAuxBuff.displaySizeY = -1;
 	}
 
 	void onFrameEnd()
