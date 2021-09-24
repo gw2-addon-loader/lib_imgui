@@ -16,6 +16,8 @@
     <ClCompile Include="src\Core.cpp" />
     <ClCompile Include="src\Direct3D9Hooks.cpp" />
     <ClCompile Include="src\imgui_impl_dx9_custom.cpp" />
+    <ClCompile Include="src\Direct3D11Hooks.cpp" />
+    <ClCompile Include="dep\imgui\examples\imgui_impl_dx11.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h" />
@@ -34,6 +36,7 @@
     <ClInclude Include="src\Direct3D9Hooks.h" />
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="gw2al_lib_imgui.h" />
+    <ClInclude Include="src\Direct3D11Hooks.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source.def" />
