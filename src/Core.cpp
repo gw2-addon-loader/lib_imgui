@@ -35,16 +35,62 @@ Core::~Core()
 	}
 }
 
+void Core::SwapchainCreate11(ID3D11Device5* device, ID3D11DeviceContext* context, IDXGISwapChain4* swc, DXGI_SWAP_CHAIN_DESC* desc)
+{
+	ImGui_ImplDX11_Shutdown();
+
+	SetWindowHandle(desc->OutputWindow);
+	ImGui_ImplWin32_Init(gameWindow_);
+
+	// Initialize graphics
+	screenWidth_ = desc->BufferDesc.Width;
+	screenHeight_ = desc->BufferDesc.Height;
+	firstFrame_ = true;
+
+	ImGui_ImplDX11_Init(device, context);
+}
+
+void Core::DrawOver11()
+{
+	if (firstFrame_)
+	{
+		firstFrame_ = false;
+	}
+	else
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		//this sends event to all other addons to draw their UI
+		SendDrawEvent();
+
+		ImGui::Render();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	}
+}
+
+void Core::PreReset11()
+{
+	ImGui_ImplDX11_InvalidateDeviceObjects();
+}
+
+void Core::PostReset11()
+{
+	ImGui_ImplDX11_CreateDeviceObjects();
+}
+
+
 void Core::InternalInit()
 {	
-	Direct3D9Hooks::i()->preCreateDeviceCallback([this](HWND hWnd){ PreCreateDevice(hWnd); });
+	Direct3D9Hooks::i()->preCreateDeviceCallback([this](HWND hWnd){ SetWindowHandle(hWnd); });
 	Direct3D9Hooks::i()->postCreateDeviceCallback([this](IDirect3DDevice9* d, D3DPRESENT_PARAMETERS* pp){ PostCreateDevice(d, pp); });
 	
 	Direct3D9Hooks::i()->preResetCallback([this](){ PreReset(); });
 	Direct3D9Hooks::i()->postResetCallback([this](IDirect3DDevice9* d, D3DPRESENT_PARAMETERS* pp){ PostReset(d, pp); });
 	
 	Direct3D9Hooks::i()->drawOverCallback([this](IDirect3DDevice9* d, bool frameDrawn, bool sceneEnded){ DrawOver(d, frameDrawn, sceneEnded); });
-	
+		
 	imguiContext_ = ImGui::CreateContext();
 }
 
@@ -95,7 +141,7 @@ LRESULT Core::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return CallWindowProc(i()->baseWndProc_, hWnd, msg, wParam, lParam);
 }
 
-void Core::PreCreateDevice(HWND hFocusWindow)
+void Core::SetWindowHandle(HWND hFocusWindow)
 {
 	gameWindow_ = hFocusWindow;
 

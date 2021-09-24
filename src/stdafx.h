@@ -10,6 +10,8 @@
 #define WIN32_LEAN_AND_MEAN  
 #include <windows.h>
 #include <d3d9.h>
+#include <d3d11_4.h>
+#include <dxgi1_6.h>
 #include <shellapi.h>
 
 #include "../dep/gw2al_api.h"
@@ -19,11 +21,13 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <examples/imgui_impl_dx9.h>
+#include <examples/imgui_impl_dx11.h>
 #include <examples/imgui_impl_win32.h>
 
 #include "Singleton.h"
 #include "Core.h"
 #include "Direct3D9Hooks.h"
+#include "Direct3D11Hooks.h"
 
 #define COM_RELEASE(x) { if((x)) { (x)->Release(); (x) = nullptr; } }
 #define NULL_COALESCE(a, b) ((a) != nullptr ? (a) : (b))

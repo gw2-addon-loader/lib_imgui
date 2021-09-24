@@ -2,23 +2,15 @@
 #include "build_version.h"
 
 gw2al_addon_dsc gAddonDeps[] = {
-	{
-		L"loader_core",
-		L"whatever",
-		0, 1, 1, 0
-	},
-	{
-		L"d3d9_wrapper",
-		L"Wrapper for d3d9 API that includes hooking and custom d3d9 loading",
-		1, 0, 2, 0
-	},
+	GW2AL_CORE_DEP_ENTRY,
+	D3D_WRAPPER_DEP_ENTRY,
 	{0,0,0,0,0,0}
 };
 
 gw2al_addon_dsc gAddonDsc = {
 	L"lib_imgui",
 	L"provides imgui context that can be used in other addons",
-	1,
+	2,
 	0,
 	BUILD_VERSION_REV,
 	gAddonDeps
@@ -56,6 +48,7 @@ gw2al_api_ret gw2addon_load(gw2al_core_vtable* core_api)
 	gAPI = core_api;
 	
 	lib_imgui::Direct3D9Hooks::i()->InitHooks(core_api);
+	lib_imgui::Direct3D11Hooks::i()->InitHooks(core_api);
 
 	getContextExportNameHash = gAPI->hash_name((wchar_t*)getContextExportName);
 	guiDrawEventNameHash = gAPI->hash_name((wchar_t*)guiDrawEventName);

@@ -26,13 +26,18 @@ namespace lib_imgui
 		int screenHeight() const { return screenHeight_; }
 		void* imguiContext() const { return (void*)imguiContext_; }
 
+		void SwapchainCreate11(ID3D11Device5* device, ID3D11DeviceContext* context, IDXGISwapChain4* swc, DXGI_SWAP_CHAIN_DESC* desc);
+		void DrawOver11();
+		void PreReset11();
+		void PostReset11();
 protected:
 	void InternalInit();
 
 	void OnDeviceSet(IDirect3DDevice9 *device, D3DPRESENT_PARAMETERS *presentationParameters);
 	void OnDeviceUnset();
 
-	void PreCreateDevice(HWND hFocusWindow);
+
+	void SetWindowHandle(HWND hFocusWindow);
 	void PostCreateDevice(IDirect3DDevice9 *device, D3DPRESENT_PARAMETERS *presentationParameters);
 
 	void PreReset();
