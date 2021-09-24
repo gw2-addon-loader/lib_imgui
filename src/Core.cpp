@@ -47,8 +47,14 @@ void Core::SwapchainCreate11(ID3D11Device5* device, ID3D11DeviceContext* context
 	screenHeight_ = desc->BufferDesc.Height;
 	firstFrame_ = true;
 
+	dxSwapChain = swc;
+	pD11Device = device;
+	pD11DeviceContext = context;
+
 	ImGui_ImplDX11_Init(device, context);
 }
+
+ID3D11RenderTargetView* pD11RenderTargetView = nullptr;
 
 void Core::DrawOver11()
 {
@@ -58,6 +64,18 @@ void Core::DrawOver11()
 	}
 	else
 	{
+		//TODO: took this part from https://github.com/lguilhermee/Discord-DX11-Overlay-Hook/
+		//maybe it is bad idea to recreate RTVs every frame? need to deal with this later on
+		ID3D11Texture2D* renderTargetTexture = nullptr;
+		if (!pD11RenderTargetView)
+		{
+			if (SUCCEEDED(dxSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID*>(&renderTargetTexture))))
+			{
+				pD11Device->CreateRenderTargetView(renderTargetTexture, nullptr, &pD11RenderTargetView);
+				renderTargetTexture->Release();
+			}
+		}
+
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -65,7 +83,16 @@ void Core::DrawOver11()
 		//this sends event to all other addons to draw their UI
 		SendDrawEvent();
 
+		pD11DeviceContext->OMSetRenderTargets(1, &pD11RenderTargetView, nullptr);
 		ImGui::Render();
+
+		// Release and free resources to setup again on the next loop.
+		if (pD11RenderTargetView)
+		{
+			pD11RenderTargetView->Release();
+			pD11RenderTargetView = nullptr;
+		}
+
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 }

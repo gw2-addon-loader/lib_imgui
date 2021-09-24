@@ -53,6 +53,10 @@ protected:
 	int screenHeight_ = 0;
 	bool firstFrame_ = true;
 
+	IDXGISwapChain4* dxSwapChain = nullptr;
+	ID3D11Device5* pD11Device = nullptr;
+	ID3D11DeviceContext* pD11DeviceContext = nullptr;
+
 	ImGuiContext* imguiContext_ = nullptr;
 };
 }
